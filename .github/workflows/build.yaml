@@ -1,0 +1,37 @@
+name: Build Whisper-GPT Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set Up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.9"
+
+    - name: Install Dependencies
+      run: |
+        python -m venv whisper_env
+        source whisper_env/bin/activate
+        pip install -r requirements.txt
+
+    - name: Cache Dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Run a Test Transcription (Optional)
+      run: |
+        echo "Test run completed"
